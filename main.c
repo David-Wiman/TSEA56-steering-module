@@ -1,6 +1,6 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
-
+#include <math.h>
 
 void PWM_init() {
 	// Set fast PWM mode with non-inverted output for engine
@@ -28,43 +28,46 @@ int limit_speed(int speed) {
 }
 
 
-// Limit angle to [-360, 360]
-int limit_angle(int angle) {
-	if (angle < -360) {
-		return -360;
-	} else if (angle > 360) {
-		return 360;
-	} else {
-		return angle;
-	}
-}
 
-
-/* Group-8 steering control
+/*  steering control
 	r_lat: lateral distance to reference point from the closest wall
 	l_lat: the cars current lateral distance from the closest wall
 	cur_speed: the cars current speed
 	cur_angle: the cars current angle relative to the road
 */
-int group_8_steering_control(int r_lat, int l_lat, int cur_speed, int cur_angle) {
-	
+int set_steering_pwm(int r_lat, int l_lat, int cur_speed, int cur_angle) {
+	uint8_t KP = 1;  // Proportional control variable
+	uint8_t KD = 1;  // Derivative control variable
+	uint16_t y = KP*(r_lat - l_lat) + KD*(cur_speed*sin(cur_angle));
+	if (y < -360) {
+		return -360;
+	} else if (y > 360) {
+		return 360;
+	} else {
+		return y;
+	}
 }
 
 
-// Set speed and angle values
+/*  Set speed and angle values
+	The car is in neutral mode when OCR1A = 1590
+	Maximal left-turn the car is capable of occurs at OCR1A = 1590 + (-360)
+	Maximal right-turn the car is capable of occurs at OCR1A = 1590 + 360
+	The above is regulated by set_steering_pwm
+*/
+
 void PWM_SET(int steering_angle, int throttle) {
 	OCR0A = limit_speed(throttle);					// Engine duty cycle
-	OCR1A = 1590 - limit_angle(angle);			// Steering duty cycle
+	OCR1A = 1590 + set_steering_pwm(100, 80, steering_angle, 0);			// Steering duty cycle
 }
 
 
 int main ()
 {
 	PWM_init();
-	PWM_SET(-360, 0);
 
 	while (1)
-	{
-
+	{	
+		PWM_SET(-360, 0);
 	}
 }
