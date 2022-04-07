@@ -5,6 +5,7 @@
 #include "steering.h"
 #include "../communication-module/common/avr_i2c.h"
 #include "../communication-module/common/i2c_common.h"
+#include <util/delay.h>
 
 
 int main() {
@@ -19,9 +20,8 @@ int main() {
 	int16_t cur_lat = 0;
 	int16_t ref_lat = 0;
 	int16_t cur_ang = 0;
-
+	
 	while (1) {	
-		
 		if (i2c_new_data) {
 			i2c_new_data = false;
 			int len = I2C_unpack(message_names, messages); 
@@ -102,7 +102,7 @@ int main() {
 					}
 				}
 
-				set_steering_pwm(cur_vel, cur_lat, ref_lat, cur_ang);
+				set_regulated_steering(cur_vel, cur_lat, ref_lat, cur_ang);
 			} else {
 				// TODO
 			}
