@@ -26,6 +26,19 @@ void PWM_init() {
 }
 
 
+void safety_timer_init() {
+	TCCR3A = 0;
+	TCCR3B = (1<<WGM32) | (1<<CS32);  // Set CTC and prescaler = 256
+	TIMSK3 = (1<<OCIE3A); // Set OCR1A as top-value
+	OCR3A = 31250;  // Gives interrupt each second
+}
+
+
+ISR (TIMER3_COMPA_vect) {
+	set_speed(0);  // Stops the car if it receives no signals
+}
+
+
 /* Ensures the speed stays within reasonable bounds (100 < OCR0A < 0, max OCR0A = 255) */
 void set_speed(int16_t speed) {
 	if (speed > 100) {

@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include <math.h>
 #include <inttypes.h>
+#include <avr/interrupt.h>
 
 #include "steering.h"
 #include "../communication-module/common/avr_i2c.h"
@@ -10,6 +11,7 @@
 
 int main() {
 	PWM_init();
+	safety_timer_init();
 	I2C_init(0x51);
 	
 	uint16_t message_names[16];
@@ -79,6 +81,8 @@ int main() {
 							break;
 					}
 				}
+				reset_safety_timer();
+				
 			} else if (cur_vel_bool && ref_vel_bool && cur_lat_bool && ref_lat_bool && cur_ang_bool) {
 				// Automatic modes
 				for (int i=0; i<len; ++i) {
@@ -101,8 +105,9 @@ int main() {
 							break;
 					}
 				}
-
+				reset_safety_timer();
 				set_regulated_steering(cur_vel, cur_lat, ref_lat, cur_ang);
+				
 			} else {
 				// TODO
 			}
