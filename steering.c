@@ -59,7 +59,6 @@ void set_steering(int16_t steering) {  // uint16_t didn't work.
 		OCR1A = 1230;    // Max turn right
 	} else {
 		OCR1A = 1590 - steering;
-		
 	}
 }
 
@@ -70,9 +69,7 @@ void set_steering(int16_t steering) {  // uint16_t didn't work.
 	cur_vel: the cars current speed
 	cur_ang: the cars current angle relative to the road
 */
-void set_regulated_steering(int16_t cur_vel, int16_t cur_lat, int16_t ref_lat, int16_t cur_ang) {
-	uint16_t KP = 1;  // Proportional control variable
-	uint16_t KD = 1;  // Derivative control variable
-	uint16_t y = KP*(ref_lat - cur_lat) + KD*(cur_vel*sin(cur_ang));
-	set_steering(y);
+int16_t calculate_steering(int16_t cur_vel, int16_t cur_lat, int16_t ref_lat, int16_t cur_ang, int16_t steering_KP, int16_t steering_KD) {
+	uint16_t y = (steering_KP/1000)*(ref_lat - cur_lat) + (steering_KD/1000)*(cur_vel*sin(cur_ang));
+	return y;
 }
