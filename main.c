@@ -17,6 +17,8 @@ int main() {
 	uint16_t message_names[16];
 	uint16_t messages[16];
 	// Values to be extracted from messages
+	int16_t man_gas = 0;
+	int16_t man_ang = 0;
 	int16_t cur_vel = 0;
 	int16_t ref_vel = 0;
 	int16_t cur_lat = 0;
@@ -48,9 +50,11 @@ int main() {
 					
 					case STEERING_MANUAL_GAS:
 						man_gas_bool = true;
+						man_gas = messages[i];
 						break;		
 					case STEERING_MANUAL_ANG:
 						man_steer_bool = true;
+						man_ang = messages[i];
 						break;
 						
 					case STEERING_CUR_VEL:
@@ -93,17 +97,8 @@ int main() {
 			
 			if (man_gas_bool && man_steer_bool) {
 				// Manual mode
-				for (int i=0; i<len; ++i) {
-					switch (message_names[i]) {
-						
-						case STEERING_MANUAL_GAS:
-							set_speed(messages[i]);
-							break;
-						case STEERING_MANUAL_ANG:
-							set_steering(restore_signed(messages[i]));
-							break;
-					}
-				}
+				set_speed(man_gas);
+				set_steering(man_ang);
 				reset_safety_timer();
 				
 			} else if (cur_vel_bool && ref_vel_bool && cur_lat_bool && ref_lat_bool && cur_ang_bool && steering_KP_bool && steering_KD_bool && speed_KP_bool) {
