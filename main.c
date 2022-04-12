@@ -104,8 +104,12 @@ int main() {
 			} else if (cur_vel_bool && ref_vel_bool && cur_lat_bool && ref_lat_bool && cur_ang_bool && steering_KP_bool && steering_KD_bool && speed_KP_bool) {
 				// Automatic modes
 				reset_safety_timer();
+				
 				int16_t y = calculate_steering(cur_vel, cur_lat, ref_lat, cur_ang, steering_KP, steering_KD);
-				git sset_steering(y);
+				set_steering(y);
+				
+				y = calculate_speed(cur_vel, ref_vel, speed_KP);
+				set_speed(y);
 				
 			} else {
 				// TODO
