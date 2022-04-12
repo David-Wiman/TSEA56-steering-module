@@ -63,6 +63,12 @@ void set_steering(int16_t steering) {  // uint16_t didn't work.
 }
 
 
+int16_t calculate_speed(int16_t cur_vel, int16_t ref_vel, int16_t speed_KP) {
+	uint16_t y = speed_KP*(ref_vel - cur_vel);
+	return y;
+}
+
+
 /*  steering control
 	ref_lat: lateral distance to reference point from the closest wall
 	cur_lat: the cars current lateral distance from the closest wall
