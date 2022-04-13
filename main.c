@@ -23,10 +23,15 @@ int main() {
 	int16_t ref_vel = 0;
 	int16_t cur_lat = 0;
 	int16_t ref_lat = 0;
-	int16_t cur_ang = 0;
+	int16_t cur_ang_left = 0;
+	int16_t cur_ang_right = 0;
+	int16_t cur_ang_avr = 0;
 	int16_t steering_KP = 0;
 	int16_t steering_KD = 0;
 	int16_t speed_KP = 0;
+	int16_t turn_KP = 0;
+	int16_t turn_KD = 0;
+	int16_t regulation_mode = 0;
 	
 	while (1) {	
 		if (i2c_new_data) {
@@ -40,10 +45,14 @@ int main() {
 			bool ref_vel_bool = false;    // Reference velocity
 			bool cur_lat_bool = false;    // Current lateral distance
 			bool ref_lat_bool = false;    // Reference lateral distance
-			bool cur_ang_bool = false;    // Current angle
+			bool cur_ang_left_bool = false;    // Current angle
+			bool cur_ang_right_bool = false;    // Current angle
 			bool steering_KP_bool = false;// KP parameter for steering
 			bool steering_KD_bool = false;// KD parameter for steering
 			bool speed_KP_bool = false;   // KP parameter for speed
+			bool turn_KP_bool = false;   // KP parameter for turning
+			bool turn_KD_bool = false;   // KD parameter for turning
+			bool regulation_mode_bool = false;   // Regulation mode
 			
 			for (int i=0; i<len; ++i) {
 				switch (message_names[i]) {
@@ -73,9 +82,13 @@ int main() {
 						ref_lat_bool = true;
 						ref_lat = messages[i];
 						break;
-					case STEERING_CUR_ANG:
-						cur_ang_bool = true;
-						cur_ang = messages[i];
+					case STEERING_CUR_ANG_LEFT:
+						cur_ang_left_bool = true;
+						cur_ang_left = messages[i];
+						break;
+					case STEERING_CUR_ANG_RIGHT:
+						cur_ang_right_bool = true;
+						cur_ang_right = messages[i];
 						break;
 					case STEERING_STEERING_KP:
 						steering_KP_bool = true;
@@ -89,6 +102,18 @@ int main() {
 						speed_KP_bool = true;
 						speed_KP = messages[i];
 						break;
+					case STEERING_TURN_KP:
+						turn_KP_bool = true;
+						turn_KP = messages[i];
+						break;
+					case STEERING_TURN_KD:
+						turn_KD_bool = true;
+						turn_KD = messages[i];
+						break;
+					case STEERING_REGULATION_MODE:
+						regulation_mode_bool = true;
+						regulation_mode = messages[i];
+						break;
 						
 					default:
 						break;
@@ -101,16 +126,23 @@ int main() {
 				set_steering(man_ang);
 				reset_safety_timer();
 				
-			} else if (cur_vel_bool && ref_vel_bool && cur_lat_bool && ref_lat_bool && cur_ang_bool && steering_KP_bool && steering_KD_bool && speed_KP_bool) {
+			} else if (cur_vel_bool && ref_vel_bool && cur_lat_bool && ref_lat_bool && cur_ang_left_bool && cur_ang_right_bool && steering_KP_bool && steering_KD_bool && speed_KP_bool && turn_KP_bool && turn_KD_bool && regulation_mode_bool) {
 				// Automatic modes
 				reset_safety_timer();
 				
-				int16_t y = calculate_steering(cur_vel, cur_lat, ref_lat, cur_ang, steering_KP, steering_KD);
-				set_steering(y);
+				if (regulation_mode == 0) { // Drive forward
+					
+					cur_ang_avr = (cur_ang_left + cur_ang_right)/2;
+					int16_t y = calculate_steering(cur_vel, cur_lat, ref_lat, cur_ang_avr, steering_KP, steering_KD);
+					set_steering(y);
+					
+					y = calculate_speed(cur_vel, ref_vel, speed_KP);
+					set_speed(y);
+				}
 				
-				y = calculate_speed(cur_vel, ref_vel, speed_KP);
-				set_speed(y);
-				
+				else if (regulation_mode == 1) { // Currently turning
+					// TODO
+				}
 			} else {
 				// TODO
 			}
