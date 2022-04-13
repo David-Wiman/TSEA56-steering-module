@@ -130,18 +130,17 @@ int main() {
 				// Automatic modes
 				reset_safety_timer();
 				
-				if (regulation_mode == 0) { // Drive forward
 					
-					cur_ang_avr = (cur_ang_left + cur_ang_right)/2;
-					int16_t y = calculate_steering(cur_vel, cur_lat, ref_lat, cur_ang_avr, steering_KP, steering_KD);
-					set_steering(y);
-					
-					y = calculate_speed(cur_vel, ref_vel, speed_KP);
-					set_speed(y);
-				}
+				int16_t y = calculate_speed(cur_vel, ref_vel, speed_KP);
+				set_speed(y);
 				
-				else if (regulation_mode == 1) { // Currently turning
-					// TODO
+				if (regulation_mode == 0) { // Drive forward
+					cur_ang_avr = (cur_ang_left + cur_ang_right)/2;
+					y = calculate_steering(cur_vel, cur_lat, ref_lat, cur_ang_avr, steering_KP, steering_KD);
+					set_steering(y);
+				} else if (regulation_mode == 1) { // Currently turning
+					y = calculate_steering_turning(cur_vel, cur_lat, ref_lat, cur_ang_left, cur_ang_right, turn_KP, turn_KD);
+					set_steering(y);				
 				}
 			} else {
 				// TODO
