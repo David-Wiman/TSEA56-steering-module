@@ -23,8 +23,7 @@ int main() {
 	int16_t ref_vel = 0;
 	int16_t cur_lat = 0;
 	int16_t ref_lat = 0;
-	int16_t cur_ang_left = 0;
-	int16_t cur_ang_right = 0;
+	int16_t cur_ang = 0;
 	int16_t cur_ang_avr = 0;
 	int16_t steering_KP = 0;
 	int16_t steering_KD = 0;
@@ -48,8 +47,7 @@ int main() {
 			bool ref_vel_bool = false;    // Reference velocity
 			bool cur_lat_bool = false;    // Current lateral distance
 			bool ref_lat_bool = false;    // Reference lateral distance
-			bool cur_ang_left_bool = false;    // Current angle
-			bool cur_ang_right_bool = false;    // Current angle
+			bool cur_ang_bool = false;    // Current angle
 			bool steering_KP_bool = false;// KP parameter for steering
 			bool steering_KD_bool = false;// KD parameter for steering
 			bool speed_KP_bool = false;   // KP parameter for speed
@@ -86,13 +84,9 @@ int main() {
 						ref_lat_bool = true;
 						ref_lat = messages[i];
 						break;
-					case STEERING_CUR_ANG_LEFT:
-						cur_ang_left_bool = true;
-						cur_ang_left = messages[i];
-						break;
-					case STEERING_CUR_ANG_RIGHT:
-						cur_ang_right_bool = true;
-						cur_ang_right = messages[i];
+					case STEERING_CUR_ANG:
+						cur_ang_bool = true;
+						cur_ang = messages[i];
 						break;
 					case STEERING_STEERING_KP:
 						steering_KP_bool = true;
@@ -134,7 +128,7 @@ int main() {
 				set_steering(man_ang);
 				reset_safety_timer();
 				
-			} else if (cur_vel_bool && ref_vel_bool && cur_lat_bool && ref_lat_bool && cur_ang_left_bool && cur_ang_right_bool && steering_KP_bool && steering_KD_bool && speed_KP_bool && turn_KP_bool && turn_KD_bool && regulation_mode_bool) {
+			} else if (cur_vel_bool && ref_vel_bool && cur_lat_bool && ref_lat_bool && cur_ang && steering_KP_bool && steering_KD_bool && speed_KP_bool && turn_KP_bool && turn_KD_bool && regulation_mode_bool) {
 				// Automatic modes
 				reset_safety_timer();
 				
@@ -143,11 +137,10 @@ int main() {
 				set_speed(y);
 				
 				if (regulation_mode == 0) { // Drive forward
-					cur_ang_avr = (cur_ang_left + cur_ang_right)/2;
-					y = calculate_steering(cur_vel, cur_lat, ref_lat, cur_ang_avr, steering_KP, steering_KD);
+					y = calculate_steering(cur_vel, cur_lat, ref_lat, cur_ang, steering_KP, steering_KD);
 					set_steering(y);
 				} else if (regulation_mode == 1) { // Currently turning
-					y = calculate_steering_turning(cur_vel, cur_lat, ref_lat, cur_ang_left, cur_ang_right, turn_KP, turn_KD);
+					y = calculate_steering_turning(cur_vel, cur_lat, ref_lat, cur_ang, turn_KP, turn_KD);
 					set_steering(y);				
 				}
 			} else {
