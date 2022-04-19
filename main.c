@@ -29,9 +29,12 @@ int main() {
 	int16_t steering_KP = 0;
 	int16_t steering_KD = 0;
 	int16_t speed_KP = 0;
+	int16_t speed_KI = 0;
 	int16_t turn_KP = 0;
 	int16_t turn_KD = 0;
 	int16_t regulation_mode = 0;
+	
+	int16_t speed_I_sum = 0;  // Integration sum for the speed regulator
 	
 	while (1) {	
 		if (i2c_new_data) {
@@ -50,6 +53,7 @@ int main() {
 			bool steering_KP_bool = false;// KP parameter for steering
 			bool steering_KD_bool = false;// KD parameter for steering
 			bool speed_KP_bool = false;   // KP parameter for speed
+			bool speed_KI_bool = false;   // KI parameter for speed
 			bool turn_KP_bool = false;   // KP parameter for turning
 			bool turn_KD_bool = false;   // KD parameter for turning
 			bool regulation_mode_bool = false;   // Regulation mode
@@ -102,6 +106,10 @@ int main() {
 						speed_KP_bool = true;
 						speed_KP = messages[i];
 						break;
+					case STEERING_SPEED_KI:
+						speed_KI_bool = true;
+						speed_KI = messages[i];
+						break;
 					case STEERING_TURN_KP:
 						turn_KP_bool = true;
 						turn_KP = messages[i];
@@ -119,7 +127,7 @@ int main() {
 						break;
 				}
 			}
-			
+
 			if (man_gas_bool && man_steer_bool) {
 				// Manual mode
 				set_speed(man_gas);
@@ -130,8 +138,8 @@ int main() {
 				// Automatic modes
 				reset_safety_timer();
 				
-					
-				int16_t y = calculate_speed(cur_vel, ref_vel, speed_KP);
+				speed_I_sum = speed_I_sum + (ref_vel - cur_vel);
+				int16_t y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_KI, speed_I_sum);
 				set_speed(y);
 				
 				if (regulation_mode == 0) { // Drive forward

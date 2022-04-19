@@ -2,6 +2,7 @@
 #include <avr/interrupt.h>
 #include <math.h>
 #include <inttypes.h>
+#include <util/delay.h>
 
 #include "steering.h"
 
@@ -63,8 +64,8 @@ void set_steering(int16_t steering) {  // uint16_t didn't work.
 }
 
 
-int16_t calculate_speed(int16_t cur_vel, int16_t ref_vel, int16_t speed_KP) {
-	uint16_t y = speed_KP*(ref_vel - cur_vel);
+int16_t calculate_speed(int16_t cur_vel, int16_t ref_vel, int16_t speed_KP, int16_t speed_KI, int16_t int_sum) {
+	uint16_t y = speed_KP*(ref_vel - cur_vel) + speed_KI*int_sum;
 	return y;
 }
 
