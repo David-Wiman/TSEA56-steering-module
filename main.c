@@ -127,13 +127,19 @@ int main() {
 				set_speed(man_gas);
 				set_steering(man_ang);
 				reset_safety_timer();
+			} else if (man_steer_bool && cur_vel_bool && ref_vel_bool && speed_KP_bool && speed_KI_bool) {
+				// Manual mode with speed regulation
+				speed_I_sum = speed_I_sum + (speed_KI/1000)*(ref_vel - cur_vel);
+				int16_t y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
+				set_speed(y);
+				set_steering(man_ang);
 				
 			} else if (cur_vel_bool && ref_vel_bool && cur_lat_bool && ref_lat_bool && cur_ang && steering_KP_bool && steering_KD_bool && speed_KP_bool && turn_KP_bool && turn_KD_bool && regulation_mode_bool) {
 				// Automatic modes
 				reset_safety_timer();
 				
-				speed_I_sum = speed_I_sum + (ref_vel - cur_vel);
-				int16_t y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_KI, speed_I_sum);
+				speed_I_sum = speed_I_sum + (speed_KI/1000)*(ref_vel - cur_vel);
+				int16_t y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
 				set_speed(y);
 				
 				if (regulation_mode == 0) { // Drive forward
