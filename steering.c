@@ -42,8 +42,8 @@ ISR (TIMER3_COMPA_vect) {
 
 /* Ensures the speed stays within reasonable bounds (100 < OCR0A < 0, max OCR0A = 255) */
 void set_speed(int16_t speed) {
-	if (speed > 100) {
-		OCR0A = 100;
+	if (speed > 150) {
+		OCR0A = 150;
 	} else if (speed < 0) {
 		OCR0A = 0;
 	} else {
@@ -65,7 +65,7 @@ void set_steering(int16_t steering) {  // uint16_t didn't work.
 
 
 int16_t calculate_speed(int16_t cur_vel, int16_t ref_vel, int16_t speed_KP, int16_t int_sum) {
-	uint16_t y = (speed_KP/1000)*(ref_vel - cur_vel) + int_sum;
+	uint16_t y = (speed_KP*(ref_vel - cur_vel))/1000 + int_sum;
 	return y;
 }
 
