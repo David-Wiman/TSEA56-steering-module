@@ -6,7 +6,6 @@
 
 #include "steering.h"
 
-
 void PWM_init() {
 	// Set fast PWM mode with non-inverted output for engine
 	TCCR0A = (1<<WGM00) | (1<<WGM01) |  (1<<COM0A1);
@@ -42,8 +41,8 @@ ISR (TIMER3_COMPA_vect) {
 
 /* Ensures the speed stays within reasonable bounds (100 < OCR0A < 0, max OCR0A = 255) */
 void set_speed(int16_t speed) {
-	if (speed > 100) {
-		OCR0A = 100;
+	if (speed > max_throttle) {
+		OCR0A = max_throttle;
 	} else if (speed < 0) {
 		OCR0A = 0;
 	} else {

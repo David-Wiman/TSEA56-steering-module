@@ -129,9 +129,16 @@ int main() {
 				set_steering(man_ang);
 				
 				reset_safety_timer();
+				
 			} else if (man_steer_bool && cur_vel_bool && ref_vel_bool && speed_KP_bool && speed_KI_bool) {
 				// Manual mode with speed regulation
 				speed_I_sum = speed_I_sum + (speed_KI*(ref_vel - cur_vel))/100;
+				/*if (speed_I_sum > max_throttle) {
+					speed_I_sum = max_throttle;
+				} else if (speed_I_sum < 0) {
+					speed_I_sum = 0;
+				}*/
+				
 				int16_t y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
 				DUMMY_vel = y;
 				set_speed(y);
@@ -144,6 +151,7 @@ int main() {
 				reset_safety_timer();
 				
 				speed_I_sum = speed_I_sum + (speed_KI/1000)*(ref_vel - cur_vel);
+				
 				int16_t y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
 				set_speed(y);
 				
