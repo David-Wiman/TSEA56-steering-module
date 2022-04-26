@@ -32,6 +32,8 @@ int main() {
 	int16_t turn_KD = 0;
 	int16_t regulation_mode = 0;
 	
+	volatile int16_t  DUMMY_vel = 0;
+	
 	int16_t speed_I_sum = 0;  // Integration sum for the speed regulator
 	
 	while (1) {	
@@ -129,8 +131,9 @@ int main() {
 				reset_safety_timer();
 			} else if (man_steer_bool && cur_vel_bool && ref_vel_bool && speed_KP_bool && speed_KI_bool) {
 				// Manual mode with speed regulation
-				speed_I_sum = speed_I_sum + (speed_KI*(ref_vel - cur_vel))/1000;
+				speed_I_sum = speed_I_sum + (speed_KI*(ref_vel - cur_vel))/100;
 				int16_t y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
+				DUMMY_vel = y;
 				set_speed(y);
 				set_steering(restore_signed(man_ang));
 				

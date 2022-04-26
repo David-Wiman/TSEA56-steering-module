@@ -42,8 +42,8 @@ ISR (TIMER3_COMPA_vect) {
 
 /* Ensures the speed stays within reasonable bounds (100 < OCR0A < 0, max OCR0A = 255) */
 void set_speed(int16_t speed) {
-	if (speed > 150) {
-		OCR0A = 150;
+	if (speed > 100) {
+		OCR0A = 100;
 	} else if (speed < 0) {
 		OCR0A = 0;
 	} else {
@@ -65,7 +65,7 @@ void set_steering(int16_t steering) {  // uint16_t didn't work.
 
 
 int16_t calculate_speed(int16_t cur_vel, int16_t ref_vel, int16_t speed_KP, int16_t int_sum) {
-	uint16_t y = (speed_KP*(ref_vel - cur_vel))/1000 + int_sum;
+	int16_t y = (speed_KP*(ref_vel - cur_vel))/10 + int_sum;
 	return y;
 }
 
@@ -77,11 +77,11 @@ int16_t calculate_speed(int16_t cur_vel, int16_t ref_vel, int16_t speed_KP, int1
 	cur_ang: the cars current angle relative to the road
 */
 int16_t calculate_steering(int16_t cur_vel, int16_t cur_lat, int16_t ref_lat, int16_t cur_ang, int16_t steering_KP, int16_t steering_KD) {
-	uint16_t y = (steering_KP/1000)*(ref_lat - cur_lat) + (steering_KD/1000)*(cur_vel*sin(cur_ang));
+	int16_t y = (steering_KP/1000)*(ref_lat - cur_lat) + (steering_KD/1000)*(cur_vel*sin(cur_ang));
 	return y;
 }
 
 int16_t calculate_steering_turning(int16_t cur_vel, int16_t cur_lat, int16_t ref_lat, int16_t cur_ang, int16_t steering_KP, int16_t steering_KD) {
-	uint16_t y = 0; // implement later
+	int16_t y = 0; // implement later
 	return y;
 }
