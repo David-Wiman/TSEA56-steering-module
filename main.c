@@ -4,8 +4,8 @@
 #include <avr/interrupt.h>
 
 #include "steering.h"
-#include "../communication-module/common/avr_i2c.h"
-#include "../communication-module/common/i2c_common.h"
+#include "i2c/avr_i2c.h"
+#include "common/i2c_common.h"
 #include <util/delay.h>
 
 
