@@ -22,7 +22,6 @@ int main() {
 	int16_t cur_vel = 0;
 	int16_t ref_vel = 0;
 	int16_t cur_lat = 0;
-	int16_t ref_lat = 0;
 	int16_t cur_ang = 0;
 	int16_t steering_KP = 0;
 	int16_t steering_KD = 0;
@@ -48,7 +47,6 @@ int main() {
 			bool cur_vel_bool = false;    // Current velocity
 			bool ref_vel_bool = false;    // Reference velocity
 			bool cur_lat_bool = false;    // Current lateral distance
-			bool ref_lat_bool = false;    // Reference lateral distance
 			bool cur_ang_bool = false;    // Current angle
 			bool steering_KP_bool = false;// KP parameter for steering
 			bool steering_KD_bool = false;// KD parameter for steering
@@ -81,10 +79,6 @@ int main() {
 					case STEERING_CUR_LAT:
 						cur_lat_bool = true;
 						cur_lat = messages[i];
-						break;
-					case STEERING_REF_LAT:
-						ref_lat_bool = true;
-						ref_lat = messages[i];
 						break;
 					case STEERING_CUR_ANG:
 						cur_ang_bool = true;
@@ -158,7 +152,7 @@ int main() {
 					DUMMY_vel = y;
 					set_speed(y);
 					
-					y = calculate_steering_turning(cur_vel, cur_lat, ref_lat, cur_ang, turn_KP, turn_KD);
+					y = calculate_steering_turning(cur_vel, cur_lat, cur_ang, turn_KP, turn_KD);
 					set_steering(y);
 					
 					reset_safety_timer();

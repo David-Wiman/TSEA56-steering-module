@@ -75,12 +75,12 @@ int16_t calculate_speed(int16_t cur_vel, int16_t ref_vel, int16_t speed_KP, int1
 	cur_vel: the cars current speed
 	cur_ang: the cars current angle relative to the road
 */
-int16_t calculate_steering(int16_t cur_vel, int16_t cur_lat, int16_t ref_lat, int16_t cur_ang, int16_t steering_KP, int16_t steering_KD) {
-	int16_t y = (steering_KP/1000)*(ref_lat - cur_lat) + (steering_KD/1000)*(cur_vel*sin(cur_ang));
+int16_t calculate_steering(int16_t cur_vel, int16_t cur_lat, int16_t cur_ang, int16_t steering_KP, int16_t steering_KD) {
+	int16_t y = (steering_KP/1000)*(-cur_lat) + (steering_KD/1000)*(cur_vel*sin(cur_ang));
 	return y;
 }
 
-int16_t calculate_steering_turning(int16_t cur_vel, int16_t cur_lat, int16_t ref_lat, int16_t cur_ang, int16_t steering_KP, int16_t steering_KD) {
+int16_t calculate_steering_turning(int16_t cur_vel, int16_t cur_lat, int16_t cur_ang, int16_t steering_KP, int16_t steering_KD) {
 	int16_t y = 0; // implement later
 	return y;
 }
