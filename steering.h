@@ -3,7 +3,7 @@
 
 #include <inttypes.h>
 
-static uint8_t max_throttle = 100;
+static uint8_t max_throttle = 150;
 
 void PWM_init();
 

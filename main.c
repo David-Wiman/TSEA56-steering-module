@@ -137,12 +137,16 @@ int main() {
 					} else if (speed_I_sum < 0) {
 						speed_I_sum = 0;
 					}*/
-					if (cur_vel == 0 && ref_vel != 0) {
-						speed_I_sum = 0;
-					}
 					
 					y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
 					DUMMY_vel = y;
+					
+					// To kick start the car
+					if ((cur_vel == 0) && (y > 0)) {
+						y = 150;
+						speed_I_sum = 100;
+					}
+					
 					set_speed(y);
 					
 					set_steering(cur_ang);
