@@ -34,6 +34,7 @@ int main() {
 	
 	volatile int16_t  DUMMY_vel = 0;
 	
+	int16_t y = 0;
 	int16_t speed_I_sum = 0;  // Integration sum for the speed regulator
 	
 	while (1) {	
@@ -122,48 +123,46 @@ int main() {
 						break;
 				}
 			}
-
-			if (man_gas_bool && man_steer_bool) {
-				// Manual mode
-				set_speed(man_gas);
-				set_steering(man_ang);
+			
+			switch (regulation_mode) {
 				
-				reset_safety_timer();
+				case 0:  // Manual mode
+					set_speed(man_gas);
+					set_steering(man_ang);
+						
+					reset_safety_timer();
+					break;
 				
-			} else if (man_steer_bool && cur_vel_bool && ref_vel_bool && speed_KP_bool && speed_KI_bool) {
-				// Manual mode with speed regulation
-				speed_I_sum = speed_I_sum + (speed_KI*(ref_vel - cur_vel))/100;
-				/*if (speed_I_sum > max_throttle) {
-					speed_I_sum = max_throttle;
-				} else if (speed_I_sum < 0) {
-					speed_I_sum = 0;
-				}*/
+				case 1:  // Autonomous forward
+					speed_I_sum = speed_I_sum + (speed_KI*(ref_vel - cur_vel))/100;
+					
+					/*if (speed_I_sum > max_throttle) {
+						speed_I_sum = max_throttle;
+					} else if (speed_I_sum < 0) {
+						speed_I_sum = 0;
+					}*/
+					
+					y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
+					DUMMY_vel = y;
+					set_speed(y);
+					
+					set_steering(restore_signed(cur_ang));
+					
+					reset_safety_timer();
+					break;
 				
-				int16_t y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
-				DUMMY_vel = y;
-				set_speed(y);
-				set_steering(restore_signed(man_ang));
-				
-				reset_safety_timer();
-				
-			} else if (cur_vel_bool && ref_vel_bool && cur_lat_bool && ref_lat_bool && cur_ang && steering_KP_bool && steering_KD_bool && speed_KP_bool && turn_KP_bool && turn_KD_bool && regulation_mode_bool) {
-				// Automatic modes
-				reset_safety_timer();
-				
-				speed_I_sum = speed_I_sum + (speed_KI/1000)*(ref_vel - cur_vel);
-				
-				int16_t y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
-				set_speed(y);
-				
-				if (regulation_mode == 0) { // Drive forward
-					y = calculate_steering(cur_vel, cur_lat, ref_lat, cur_ang, steering_KP, steering_KD);
-					set_steering(y);
-				} else if (regulation_mode == 1) { // Currently turning
+				case 2:
+					speed_I_sum = speed_I_sum + (speed_KI*(ref_vel - cur_vel))/100;
+					
+					y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
+					DUMMY_vel = y;
+					set_speed(y);
+					
 					y = calculate_steering_turning(cur_vel, cur_lat, ref_lat, cur_ang, turn_KP, turn_KD);
-					set_steering(y);				
-				}
-			} else {
-				// TODO
+					set_steering(y);
+					
+					reset_safety_timer();
+					break;
 			}
 		}
 	}
