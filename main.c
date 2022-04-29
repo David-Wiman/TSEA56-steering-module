@@ -78,11 +78,11 @@ int main() {
 						break;
 					case STEERING_CUR_LAT:
 						cur_lat_bool = true;
-						cur_lat = messages[i];
+						cur_lat = restore_signed(messages[i]);
 						break;
 					case STEERING_CUR_ANG:
 						cur_ang_bool = true;
-						cur_ang = messages[i];
+						cur_ang = restore_signed(messages[i]);
 						break;
 					case STEERING_STEERING_KP:
 						steering_KP_bool = true;
@@ -128,6 +128,8 @@ int main() {
 					break;
 				
 				case 1:  // Autonomous forward
+				
+					
 					speed_I_sum = speed_I_sum + (speed_KI*(ref_vel - cur_vel))/100;
 					
 					/*if (speed_I_sum > max_throttle) {
@@ -135,12 +137,15 @@ int main() {
 					} else if (speed_I_sum < 0) {
 						speed_I_sum = 0;
 					}*/
+					if (cur_vel == 0 && ref_vel != 0) {
+						speed_I_sum = 0;
+					}
 					
 					y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
 					DUMMY_vel = y;
 					set_speed(y);
 					
-					set_steering(restore_signed(cur_ang));
+					set_steering(cur_ang);
 					
 					reset_safety_timer();
 					break;
