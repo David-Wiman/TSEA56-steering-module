@@ -31,6 +31,9 @@ int main() {
 	int16_t turn_KD = 0;
 	int16_t regulation_mode = 0;
 	
+	volatile int16_t throttle_set = 0;
+	volatile int16_t steering_set = 0;
+	
 	volatile int16_t  DUMMY_vel = 0;
 	
 	int16_t y = 0;
@@ -120,10 +123,10 @@ int main() {
 			
 			switch (regulation_mode) {
 				
-				case 0:  // Manual mode
-					set_speed(man_gas);
-					set_steering(man_ang);
-						
+				case 0: ;  // Manual mode 
+					throttle_set = set_speed(man_gas);
+					steering_set = set_steering(man_ang);
+					
 					reset_safety_timer();
 					break;
 				

@@ -13,9 +13,9 @@ inline void reset_safety_timer() {
 	TCNT3 = 0;
 }
 
-void set_speed(int16_t speed);
+int16_t set_speed(int16_t speed);
 
-void set_steering(int16_t steering);
+int16_t set_steering(int16_t steering);
 
 int16_t calculate_speed(int16_t cur_vel, int16_t ref_vel, int16_t speed_KP, int16_t int_sum);
 

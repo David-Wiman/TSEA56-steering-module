@@ -40,26 +40,27 @@ ISR (TIMER3_COMPA_vect) {
 
 
 /* Ensures the speed stays within reasonable bounds (100 < OCR0A < 0, max OCR0A = 255) */
-void set_speed(int16_t speed) {
+int16_t set_speed(int16_t speed) {
 	if (speed > max_throttle) {
-		OCR0A = max_throttle;
+		speed = max_throttle;
 	} else if (speed < 0) {
-		OCR0A = 0;
-	} else {
-		OCR0A = speed;
+		speed = 0;
 	}
+	OCR0A = speed;
+	return speed;    // Return actual throttle value set
 }
 
 
 /* Ensures the steering angle stays within bounds (1230 < OCR1A < 1950). Neutral when OCR1A = 1590 */
-void set_steering(int16_t steering) {  // uint16_t didn't work.
-	if (1590 - steering > 1950) {
-		OCR1A = 1950;    // Max turn left
-	} else if (1590 - steering < 1230) {
-		OCR1A = 1230;    // Max turn right
-	} else {
-		OCR1A = 1590 - steering;
+int16_t set_steering(int16_t steering) {  // uint16_t didn't work.
+	int16_t steering_pwm = 1590 - steering;
+	if (steering_pwm > 1950) {
+		steering_pwm = 1950;    // Max turn left
+	} else if (steering_pwm < 1230) {
+		steering_pwm = 1230;    // Max turn right
 	}
+	OCR1A = steering_pwm;
+	return 1590 - steering_pwm;    // Return actual steering value set
 }
 
 
