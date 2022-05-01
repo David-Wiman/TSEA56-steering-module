@@ -33,6 +33,8 @@ int main() {
 	
 	volatile int16_t throttle_set = 0;
 	volatile int16_t steering_set = 0;
+	volatile int16_t old_throttle_set = 0;
+	volatile int16_t old_steering_set = 0;
 	
 	volatile int16_t  DUMMY_vel = 0;
 	
@@ -126,6 +128,14 @@ int main() {
 				case 0: ;  // Manual mode 
 					throttle_set = set_speed(man_gas);
 					steering_set = set_steering(man_ang);
+					
+					if ((throttle_set != old_throttle_set) || (steering_set != old_steering_set)) {
+						uint16_t message_names_send = {STEERING_RETURN_GAS, STEERING_RETURN_ANG};
+						uint16_t messages_send = {package_signed(throttle_set), package_signed(steering_set)};
+						I2C_pack(message_names_send, messages_send, 2);
+						old_throttle_set = throttle_set;
+						old_steering_set = steering_set;
+					}
 					
 					reset_safety_timer();
 					break;
