@@ -29,7 +29,7 @@ int main() {
 	int16_t speed_KI = 0;
 	int16_t turn_KP = 0;
 	int16_t turn_KD = 0;
-	int16_t regulation_mode = 0;
+	int16_t regulation_mode = -1;
 	
 	volatile int16_t throttle_set = 0;
 	volatile int16_t steering_set = 0;
@@ -70,7 +70,7 @@ int main() {
 						break;		
 					case STEERING_MANUAL_ANG:
 						man_steer_bool = true;
-						man_ang = messages[i];
+						man_ang = restore_signed(messages[i]);
 						break;
 						
 					case STEERING_CUR_VEL:
@@ -130,8 +130,8 @@ int main() {
 					steering_set = set_steering(man_ang);
 					
 					if ((throttle_set != old_throttle_set) || (steering_set != old_steering_set)) {
-						uint16_t message_names_send = {STEERING_RETURN_GAS, STEERING_RETURN_ANG};
-						uint16_t messages_send = {package_signed(throttle_set), package_signed(steering_set)};
+						uint16_t message_names_send[] = {STEERING_RETURN_GAS, STEERING_RETURN_ANG};
+						uint16_t messages_send[] = {package_signed(throttle_set), package_signed(steering_set)};
 						I2C_pack(message_names_send, messages_send, 2);
 						old_throttle_set = throttle_set;
 						old_steering_set = steering_set;
