@@ -25,8 +25,8 @@ int main() {
 	int16_t cur_ang = 0;
 	int16_t steering_KP = 0;
 	int16_t steering_KD = 0;
-	int16_t speed_KP = 0;
-	int16_t speed_KI = 0;
+	int16_t speed_KP = 2;
+	int16_t speed_KI = 2;
 	int16_t turn_KP = 0;
 	int16_t turn_KD = 0;
 	int16_t regulation_mode = -1;
@@ -178,6 +178,9 @@ int main() {
 					set_steering(y);
 					
 					reset_safety_timer();
+					break;
+					
+				default:
 					break;
 			}
 		}
