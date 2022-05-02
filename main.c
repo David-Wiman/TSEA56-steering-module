@@ -125,7 +125,7 @@ int main() {
 			
 			switch (regulation_mode) {
 				
-				case 0: ;  // Manual mode 
+				case REGULATION_MODE_MANUAL: ;  // Manual mode 
 					throttle_set = set_speed(man_gas);
 					steering_set = set_steering(man_ang);
 					
@@ -140,7 +140,7 @@ int main() {
 					reset_safety_timer();
 					break;
 				
-				case 1:  // Autonomous forward
+				case REGULATION_MODE_AUTO_FORWARD:  // Autonomous forward
 				
 					
 					speed_I_sum = speed_I_sum + (speed_KI*(ref_vel - cur_vel))/100;
@@ -167,7 +167,7 @@ int main() {
 					reset_safety_timer();
 					break;
 				
-				case 2:
+				case REGULATION_MODE_AUTO_TURN:
 					speed_I_sum = speed_I_sum + (speed_KI*(ref_vel - cur_vel))/100;
 					
 					y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
