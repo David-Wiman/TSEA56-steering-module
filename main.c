@@ -141,7 +141,7 @@ int main() {
 					break;
 				
 				case REGULATION_MODE_AUTO_FORWARD:  // Autonomous forward
-					if ((cur_vel == 0) && (ref_vel == 0)) {
+					if (ref_vel == 0) {
 						speed_I_sum = 0;
 					}
 					
