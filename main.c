@@ -164,7 +164,8 @@ int main() {
 					
 					set_speed(y);
 					
-					set_steering(cur_ang);
+					int16_t steering = calculate_steering_turning(cur_vel, cur_lat, cur_ang, turn_KP, turn_KD);
+					set_steering(steering);
 					
 					reset_safety_timer();
 					break;
@@ -174,10 +175,17 @@ int main() {
 					
 					y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
 					DUMMY_vel = y;
+					
+					// To kick start the car
+					if ((cur_vel == 0) && (y > 0)) {
+						y = 150;
+						speed_I_sum = 100;
+					}
+					
 					set_speed(y);
 					
-					y = calculate_steering_turning(cur_vel, cur_lat, cur_ang, turn_KP, turn_KD);
-					set_steering(y);
+					int16_t steering_turn = calculate_steering_turning(cur_vel, cur_lat, cur_ang, turn_KP, turn_KD);
+					set_steering(steering_turn);
 					
 					reset_safety_timer();
 					break;
