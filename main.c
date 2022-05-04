@@ -46,75 +46,47 @@ int main() {
 			i2c_new_data = false;
 			int len = I2C_unpack(message_names, messages); 
 			
-			// Bools checking whether we have automatic mode or not
-			bool man_gas_bool = false;    // Manual gas
-			bool man_steer_bool = false;  // Manual steering
-			bool cur_vel_bool = false;    // Current velocity
-			bool ref_vel_bool = false;    // Reference velocity
-			bool cur_lat_bool = false;    // Current lateral distance
-			bool cur_ang_bool = false;    // Current angle
-			bool steering_KP_bool = false;// KP parameter for steering
-			bool steering_KD_bool = false;// KD parameter for steering
-			bool speed_KP_bool = false;   // KP parameter for speed
-			bool speed_KI_bool = false;   // KI parameter for speed
-			bool turn_KP_bool = false;   // KP parameter for turning
-			bool turn_KD_bool = false;   // KD parameter for turning
-			bool regulation_mode_bool = false;   // Regulation mode
-			
 			for (int i=0; i<len; ++i) {
 				switch (message_names[i]) {
 					
 					case STEERING_MANUAL_GAS:
-						man_gas_bool = true;
 						man_gas = messages[i];
 						break;		
 					case STEERING_MANUAL_ANG:
-						man_steer_bool = true;
 						man_ang = restore_signed(messages[i]);
 						break;
 						
 					case STEERING_CUR_VEL:
-						cur_vel_bool = true;
 						cur_vel = messages[i];
 						break;
 					case STEERING_REF_VEL:
-						ref_vel_bool = true;
 						ref_vel = messages[i];
 						break;
 					case STEERING_CUR_LAT:
-						cur_lat_bool = true;
 						cur_lat = restore_signed(messages[i]);
 						break;
 					case STEERING_CUR_ANG:
-						cur_ang_bool = true;
 						cur_ang = restore_signed(messages[i]);
 						break;
 					case STEERING_STEERING_KP:
-						steering_KP_bool = true;
 						steering_KP = messages[i];  // KP value was multiplied by 1000 previously
 						break;
 					case STEERING_STEERING_KD:
-						steering_KD_bool = true;
 						steering_KD = messages[i];
 						break;
 					case STEERING_SPEED_KP:
-						speed_KP_bool = true;
 						speed_KP = messages[i];
 						break;
 					case STEERING_SPEED_KI:
-						speed_KI_bool = true;
 						speed_KI = messages[i];
 						break;
 					case STEERING_TURN_KP:
-						turn_KP_bool = true;
 						turn_KP = messages[i];
 						break;
 					case STEERING_TURN_KD:
-						turn_KD_bool = true;
 						turn_KD = messages[i];
 						break;
 					case STEERING_REGULATION_MODE:
-						regulation_mode_bool = true;
 						regulation_mode = messages[i];
 						break;
 						
