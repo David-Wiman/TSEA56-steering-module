@@ -79,7 +79,7 @@ int16_t calculate_speed(int16_t cur_vel, int16_t ref_vel, int16_t speed_KP, int1
 	cur_ang: the cars current angle relative to the road
 */
 int16_t calculate_steering(int16_t cur_vel, int16_t cur_lat, int16_t cur_ang, int16_t steering_KP, int16_t steering_KD) {
-	int16_t y = -(steering_KP*(20-cur_lat))/10 + (steering_KD*cur_vel*sin(cur_ang))/10;
+	int16_t y = -(steering_KP*(30-cur_lat))/10 + (steering_KD*cur_vel*sin(cur_ang))/10;
 	return y;
 }
 
