@@ -14,22 +14,22 @@ int main() {
 	safety_timer_init();
 	I2C_init(0x51);
 	
-	uint16_t message_names[16];
-	uint16_t messages[16];
+	volatile uint16_t message_names[16];
+	volatile uint16_t messages[16];
 	// Values to be extracted from messages
-	int16_t man_gas = 0;
-	int16_t man_ang = 0;
-	int16_t cur_vel = 0;
-	int16_t ref_vel = 0;
-	int16_t cur_lat = 0;
-	int16_t cur_ang = 0;
-	int16_t steering_KP = 0;
-	int16_t steering_KD = 0;
-	int16_t speed_KP = 2;
-	int16_t speed_KI = 2;
-	int16_t turn_KP = 0;
-	int16_t turn_KD = 0;
-	int16_t regulation_mode = -1;
+	volatile int16_t man_gas = 0;
+	volatile int16_t man_ang = 0;
+	volatile int16_t cur_vel = 0;
+	volatile int16_t ref_vel = 0;
+	volatile int16_t cur_lat = 0;
+	volatile int16_t cur_ang = 0;
+	volatile int16_t steering_KP = 100;
+	volatile int16_t steering_KD = 10;
+	volatile int16_t speed_KP = 2;
+	volatile int16_t speed_KI = 2;
+	volatile int16_t turn_KP = 0;
+	volatile int16_t turn_KD = 0;
+	volatile int16_t regulation_mode = -1;
 	
 	volatile int16_t throttle_set = 0;
 	volatile int16_t steering_set = 0;
@@ -164,7 +164,7 @@ int main() {
 					
 					set_speed(y);
 					
-					int16_t steering = calculate_steering_turning(cur_vel, cur_lat, cur_ang, turn_KP, turn_KD);
+					int16_t steering = calculate_steering(cur_vel, cur_lat, cur_ang, steering_KP, steering_KD);
 					set_steering(steering);
 					
 					reset_safety_timer();
