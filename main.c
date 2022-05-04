@@ -41,10 +41,11 @@ int main() {
 	int16_t y = 0;
 	int16_t speed_I_sum = 0;  // Integration sum for the speed regulator
 	
-	while (1) {	
+	while (1) {
+		ref_vel = 0;
 		if (i2c_new_data) {
 			i2c_new_data = false;
-			int len = I2C_unpack(message_names, messages); 
+			int len = I2C_unpack(message_names, messages);
 			
 			for (int i=0; i<len; ++i) {
 				switch (message_names[i]) {
