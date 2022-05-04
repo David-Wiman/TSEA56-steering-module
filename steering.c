@@ -12,19 +12,19 @@ void PWM_init() {
 	TCCR0B = (0<<WGM02) | (0<<CS02) | (1<<CS01) | (0<<CS00);
 	
 	// Set fast PWM mode with non-inverted output for steering
-	TCCR1A = (1<<WGM11) | (0<<WGM10) | (1<<COM1A1) | (1<<COM1B1);
+	TCCR1A = (1<<WGM11) | (0<<WGM10) | (1<<COM1A1);
 	TCCR1B = (1<<WGM13) | (1<<WGM12) | (0<<CS12) | (1<<CS11) | (0<<CS10);
 	
 	DDRB |= 0x08; // Output port engine (Yellow wire)
 	DDRD |= (1<<5); // Output port steering (Green wire)
-	DDRD |= (1<<4); // Output port direction
+	DDRD |= (1<<4); // Output port break
+	// PORTD = (1<<4);
 	
 	sei();        // Enable interrupt
 	
 	ICR1 = 20000; // Servo frequency
 	OCR0A = 0;    // Initial speed
 	OCR1A = 1590; // Initial steering output
-	OCR1B = 0;    // Inital direction ( =ICR1 when driving backwards )
 }
 
 
