@@ -24,7 +24,7 @@ int main() {
 	volatile int16_t cur_lat = 0;
 	volatile int16_t cur_ang = 0;
 	volatile int16_t steering_KP = 100;
-	volatile int16_t steering_KD = 10;
+	volatile int16_t steering_KD = 0;
 	volatile int16_t speed_KP = 2;
 	volatile int16_t speed_KI = 2;
 	volatile int16_t turn_KP = 0;
