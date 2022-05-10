@@ -24,7 +24,7 @@ void PWM_init() {
 	
 	ICR1 = 20000; // Servo frequency
 	OCR0A = 0;    // Initial speed
-	OCR1A = 1590; // Initial steering output
+	OCR1A = DEFAULT_ANGLE_OFFSET; // Initial steering output
 }
 
 
@@ -53,16 +53,16 @@ int16_t set_speed(int16_t speed) {
 }
 
 
-/* Ensures the steering angle stays within bounds (1230 < OCR1A < 1950). Neutral when OCR1A = 1590 */
+/* Ensures the steering angle stays within bounds (1230 < OCR1A < 1950). Neutral when OCR1A = DEFAULT_ANGLE_OFFSET */
 int16_t set_steering(int16_t steering) {  // uint16_t didn't work.
-	int16_t steering_pwm = 1590 - steering;
+	int16_t steering_pwm = DEFAULT_ANGLE_OFFSET - steering;
 	if (steering_pwm > 1950) {
 		steering_pwm = 1950;    // Max turn left
 	} else if (steering_pwm < 1230) {
 		steering_pwm = 1230;    // Max turn right
 	}
 	OCR1A = steering_pwm;
-	return 1590 - steering_pwm;    // Return actual steering value set
+	return DEFAULT_ANGLE_OFFSET - steering_pwm;    // Return actual steering value set
 }
 
 

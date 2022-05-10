@@ -43,6 +43,7 @@ int main() {
 	
 	while (1) {
 		ref_vel = 0;
+		regulation_mode = -1;
 		if (i2c_new_data) {
 			i2c_new_data = false;
 			int len = I2C_unpack(message_names, messages);
@@ -112,19 +113,13 @@ int main() {
 					
 					reset_safety_timer();
 					break;
-				
+
 				case REGULATION_MODE_AUTO_FORWARD:  // Autonomous forward
 					if (ref_vel == 0) {
 						speed_I_sum = 0;
+					} else {
+						speed_I_sum = speed_I_sum + (speed_KI*(ref_vel - cur_vel))/100;
 					}
-					
-					speed_I_sum = speed_I_sum + (speed_KI*(ref_vel - cur_vel))/100;
-					
-					/*if (speed_I_sum > max_throttle) {
-						speed_I_sum = max_throttle;
-					} else if (speed_I_sum < 0) {
-						speed_I_sum = 0;
-					}*/
 					
 					y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
 					DUMMY_vel = y;
