@@ -36,10 +36,8 @@ int main() {
 	volatile int16_t old_throttle_set = 0;
 	volatile int16_t old_steering_set = 0;
 	
-	volatile int16_t  DUMMY_vel = 0;
-	
 	int16_t y = 0;
-	int16_t speed_I_sum = 0;  // Integration sum for the speed regulator
+	volatile int16_t speed_I_sum = 0;  // Integration sum for the speed regulator
 	
 	while (1) {
 		ref_vel = 0;
@@ -122,7 +120,6 @@ int main() {
 					}
 					
 					y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
-					DUMMY_vel = y;
 					
 					// To kick start the car
 					if ((cur_vel == 0) && (y > 0)) {
@@ -139,10 +136,13 @@ int main() {
 					break;
 				
 				case REGULATION_MODE_AUTO_TURN:
-					speed_I_sum = speed_I_sum + (speed_KI*(ref_vel - cur_vel))/100;
+					if (ref_vel == 0) {
+						speed_I_sum = 0;
+					} else {
+						speed_I_sum = speed_I_sum + (speed_KI*(ref_vel - cur_vel))/100;
+					}
 					
 					y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
-					DUMMY_vel = y;
 					
 					// To kick start the car
 					if ((cur_vel == 0) && (y > 0)) {
