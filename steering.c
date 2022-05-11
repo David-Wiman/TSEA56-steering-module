@@ -6,6 +6,8 @@
 
 #include "steering.h"
 
+volatile uint16_t angle_offset = 1610;
+
 void PWM_init() {
 	// Set fast PWM mode with non-inverted output for engine
 	TCCR0A = (1<<WGM00) | (1<<WGM01) |  (1<<COM0A1);
@@ -24,7 +26,7 @@ void PWM_init() {
 	
 	ICR1 = 20000; // Servo frequency
 	OCR0A = 0;    // Initial speed
-	OCR1A = DEFAULT_ANGLE_OFFSET; // Initial steering output
+	OCR1A = angle_offset; // Initial steering output
 }
 
 
@@ -43,8 +45,8 @@ ISR (TIMER3_COMPA_vect) {
 
 /* Ensures the speed stays within reasonable bounds (100 < OCR0A < 0, max OCR0A = 255) */
 int16_t set_speed(int16_t speed) {
-	if (speed > max_throttle) {
-		speed = max_throttle;
+	if (speed > MAX_THROTTLE) {
+		speed = MAX_THROTTLE;
 	} else if (speed < 0) {
 		speed = 0;
 	}
@@ -53,16 +55,16 @@ int16_t set_speed(int16_t speed) {
 }
 
 
-/* Ensures the steering angle stays within bounds (1230 < OCR1A < 1950). Neutral when OCR1A = DEFAULT_ANGLE_OFFSET */
+/* Ensures the steering angle stays within bounds (1230 < OCR1A < 1950). Neutral when OCR1A = angle_offset */
 int16_t set_steering(int16_t steering) {  // uint16_t didn't work.
-	int16_t steering_pwm = DEFAULT_ANGLE_OFFSET - steering;
+	int16_t steering_pwm = angle_offset - steering;
 	if (steering_pwm > 1950) {
 		steering_pwm = 1950;    // Max turn left
 	} else if (steering_pwm < 1230) {
 		steering_pwm = 1230;    // Max turn right
 	}
 	OCR1A = steering_pwm;
-	return DEFAULT_ANGLE_OFFSET - steering_pwm;    // Return actual steering value set
+	return angle_offset - steering_pwm;    // Return actual steering value set
 }
 
 

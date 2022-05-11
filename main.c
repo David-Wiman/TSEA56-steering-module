@@ -27,7 +27,6 @@ int main() {
 	volatile int16_t steering_KD = 75;
 	volatile int16_t speed_KP = 2;
 	volatile int16_t speed_KI = 2;
-	volatile int16_t turn_KP = 0;
 	volatile int16_t turn_KD = 75;
 	volatile int16_t regulation_mode = -1;
 	
@@ -81,7 +80,7 @@ int main() {
 						speed_KI = messages[i];
 						break;
 					case STEERING_TURN_KP:
-						turn_KP = messages[i];
+						angle_offset = messages[i];
 						break;
 					case STEERING_TURN_KD:
 						turn_KD = messages[i];
@@ -152,7 +151,7 @@ int main() {
 					
 					set_speed(y);
 					
-					int16_t steering_turn = calculate_steering_turning(cur_vel, cur_lat, cur_ang, turn_KP, turn_KD);
+					int16_t steering_turn = calculate_steering_turning(cur_vel, cur_lat, cur_ang, 0, turn_KD);
 					set_steering(steering_turn);
 					
 					reset_safety_timer();

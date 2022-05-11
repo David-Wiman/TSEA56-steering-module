@@ -3,10 +3,8 @@
 
 #include <inttypes.h>
 
-#define DEFAULT_ANGLE_OFFSET 1600
-
-
-static uint8_t max_throttle = 150;
+extern volatile uint16_t angle_offset;
+#define MAX_THROTTLE 150
 
 void PWM_init();
 
