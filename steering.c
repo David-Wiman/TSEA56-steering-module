@@ -10,7 +10,7 @@ volatile uint16_t angle_offset = 1610;
 
 void PWM_init() {
 	// Set fast PWM mode with non-inverted output for engine
-	TCCR0A = (1<<WGM00) | (1<<WGM01) |  (1<<COM0A1);
+	TCCR0A = (1<<WGM00) | (0<<WGM01) |  (1<<COM0A1);
 	TCCR0B = (0<<WGM02) | (0<<CS02) | (1<<CS01) | (0<<CS00);
 	
 	// Set fast PWM mode with non-inverted output for steering
