@@ -91,7 +91,7 @@ int16_t calculate_steering(int16_t cur_vel, int16_t cur_lat, int16_t cur_ang, in
 	return y;
 }
 
-int16_t calculate_steering_turning(int16_t cur_vel, int16_t cur_lat, int16_t cur_ang, int16_t turn_KP, int16_t turn_KD) {
+int16_t calculate_steering_turning(int16_t cur_vel, int16_t cur_lat, int16_t cur_ang, int16_t turn_KD) {
 	int16_t y = (turn_KD*cur_ang)/10;
 	return y;
 }

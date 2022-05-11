@@ -79,7 +79,7 @@ int main() {
 					case STEERING_SPEED_KI:
 						speed_KI = messages[i];
 						break;
-					case STEERING_TURN_KP:
+					case STEERING_ANGLE_OFFSET:
 						angle_offset = messages[i];
 						break;
 					case STEERING_TURN_KD:
@@ -121,10 +121,10 @@ int main() {
 					y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
 					
 					// To kick start the car
-					if ((cur_vel == 0) && (y > 0)) {
+					/*if ((cur_vel == 0) && (y > 0)) {
 						y = 150;
 						speed_I_sum = 100;
-					}
+					}*/
 					
 					set_speed(y);
 					
@@ -144,14 +144,14 @@ int main() {
 					y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
 					
 					// To kick start the car
-					if ((cur_vel == 0) && (y > 0)) {
+					/*if ((cur_vel == 0) && (y > 0)) {
 						y = 150;
 						speed_I_sum = 100;
-					}
+					}*/
 					
 					set_speed(y);
 					
-					int16_t steering_turn = calculate_steering_turning(cur_vel, cur_lat, cur_ang, 0, turn_KD);
+					int16_t steering_turn = calculate_steering_turning(cur_vel, cur_lat, cur_ang, turn_KD);
 					set_steering(steering_turn);
 					
 					reset_safety_timer();
