@@ -19,8 +19,8 @@ void PWM_init() {
 	
 	DDRB |= 0x08; // Output port engine (Yellow wire)
 	DDRD |= (1<<5); // Output port steering (Green wire)
-	DDRD |= (1<<4); // Output port break
-	// PORTD = (1<<4);
+	DDRD |= (1<<3); // Output port break
+	PORTD = (0<<3);
 	
 	sei();        // Enable interrupt
 	
@@ -50,7 +50,13 @@ int16_t set_speed(int16_t speed) {
 	} else if (speed < 0) {
 		speed = 0;
 	}
-	OCR0A = speed;
+	if (speed == 0) {
+		OCR0A = 0;
+		PORTD = (1<<3);
+	} else {
+		PORTD = (0<<3);
+		OCR0A = speed;
+	}
 	return speed;    // Return actual throttle value set
 }
 
