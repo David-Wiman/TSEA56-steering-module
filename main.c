@@ -112,21 +112,13 @@ int main() {
 					break;
 
 				case REGULATION_MODE_AUTO_FORWARD:  // Autonomous forward
-					if (ref_vel == 0) {
-						speed_I_sum = 0;
-					} else {
-						speed_I_sum = speed_I_sum + (speed_KI*(ref_vel - cur_vel))/100;
+					y = ref_vel;
+					
+					if ((cur_vel == 0) && (y > 0)) {
+						y = 900;
 					}
 					
-					y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
-					
-					// To kick start the car
-					/*if ((cur_vel == 0) && (y > 0)) {
-						y = 150;
-						speed_I_sum = 100;
-					}*/
-					
-					set_speed(y);
+					set_speed(y/10);
 					
 					int16_t steering = calculate_steering(cur_vel, cur_lat, cur_ang, steering_KP, steering_KD);
 					set_steering(steering);
@@ -135,21 +127,13 @@ int main() {
 					break;
 				
 				case REGULATION_MODE_AUTO_TURN:
-					if (ref_vel == 0) {
-						speed_I_sum = 0;
-					} else {
-						speed_I_sum = speed_I_sum + (speed_KI*(ref_vel - cur_vel))/100;
+					y = ref_vel;
+					
+					if ((cur_vel == 0) && (y > 0)) {
+						y = 900;
 					}
 					
-					y = calculate_speed(cur_vel, ref_vel, speed_KP, speed_I_sum);
-					
-					// To kick start the car
-					/*if ((cur_vel == 0) && (y > 0)) {
-						y = 150;
-						speed_I_sum = 100;
-					}*/
-					
-					set_speed(y);
+					set_speed(y/10);
 					
 					int16_t steering_turn = calculate_steering_turning(cur_vel, cur_lat, cur_ang, turn_KD);
 					set_steering(steering_turn);
