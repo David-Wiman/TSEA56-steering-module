@@ -9,11 +9,11 @@
 volatile uint16_t angle_offset = 1610;
 
 void PWM_init() {
-	// Set fast PWM mode with non-inverted output for engine
+	// Set phase-correct PWM mode with non-inverted output for engine
 	TCCR0A = (1<<WGM00) | (0<<WGM01) |  (1<<COM0A1);
 	TCCR0B = (0<<WGM02) | (0<<CS02) | (1<<CS01) | (0<<CS00);
 	
-	// Set fast PWM mode with non-inverted output for steering
+	// Set phase-correct PWM mode with non-inverted output for steering
 	TCCR1A = (1<<WGM11) | (0<<WGM10) | (1<<COM1A1);
 	TCCR1B = (1<<WGM13) | (1<<WGM12) | (0<<CS12) | (1<<CS11) | (0<<CS10);
 	
@@ -81,7 +81,6 @@ int16_t calculate_speed(int16_t cur_vel, int16_t ref_vel, int16_t speed_KP, int1
 
 
 /*  steering control
-	ref_lat: lateral distance to reference point from the closest wall
 	cur_lat: the cars current lateral distance from the closest wall
 	cur_vel: the cars current speed
 	cur_ang: the cars current angle relative to the road
